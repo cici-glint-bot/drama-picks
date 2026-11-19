@@ -19,6 +19,11 @@
   .title { display:block; font-size:17px; font-weight:700; color:#FFFFFF; line-height:1.35; }
   .genre { display:block; font-size:13px; color:#B9B9C4; margin-top:4px; line-height:1.45; }
   .go { display:block; font-size:13px; color:#FFD84D; margin-top:10px; font-weight:600; }
+  .tools { display:flex; gap:8px; margin-bottom:16px; }
+  .tools input { flex:1; min-width:0; background:#1A1A21; border:1px solid #2C2C38; border-radius:10px; color:#F2F2F5; padding:11px 12px; font-size:14px; }
+  .tools input::placeholder { color:#8A8A98; }
+  .date { display:block; font-size:12px; color:#8A8A98; margin-top:8px; }
+  .none { display:none; text-align:center; color:#8A8A98; font-size:14px; padding:18px 0; }
   footer { margin-top:26px; text-align:center; color:#8A8A98; font-size:12px; line-height:1.6; }
 </style>
 </head>
@@ -30,30 +35,40 @@
     <p class="tag">Daily short drama reviews &amp; recaps.<br>One addictive mini-series a day — tap a title to watch the full series.</p>
   </header>
 
+  <div class="tools">
+    <input id="q" type="search" placeholder="Search title or keyword…">
+    <input id="d" type="date" aria-label="Filter by date added">
+  </div>
+  <p class="none" id="none">No picks match — try another keyword or clear the date.</p>
+
   <!-- Newest first. Each button href is the drama's original affiliate link, used exactly as issued. -->
 
-  <a class="pick" href="https://r.reelsgo.tv/JbQvi_AoJoOI">
+  <a class="pick" data-date="2026-11-20" href="https://r.reelsgo.tv/JbQvi_AoJoOI">
     <span class="day">NEW</span>
     <span class="title">Left for Dead, Chosen by a Billionaire</span>
     <span class="genre">Billionaire romance — her fiancé refused the ransom and married his first love, so a stranger saved her instead.</span>
+    <span class="date">Added Nov 20, 2026</span>
     <span class="go">Watch full series →</span>
   </a>
 
-  <a class="pick" href="https://r.reelsgo.tv/9EgTMJM1v6K-">
+  <a class="pick" data-date="2026-11-19" href="https://r.reelsgo.tv/9EgTMJM1v6K-">
     <span class="title">They Jailed Me. I Came Back in Command</span>
     <span class="genre">Revenge — framed by her stepsister, jailed while pregnant… then she signed up for the one program that made her untouchable.</span>
+    <span class="date">Added Nov 19, 2026</span>
     <span class="go">Watch full series →</span>
   </a>
 
-  <a class="pick" href="https://r.reelsgo.tv/vWJVj2IS6ekq">
+  <a class="pick" data-date="2026-11-18" href="https://r.reelsgo.tv/vWJVj2IS6ekq">
     <span class="title">My Ex's Brother Is My Secret Crush</span>
     <span class="genre">Mafia romance — she ghosted her online boyfriend of 6 months… then heard his voice at a mafia gala.</span>
+    <span class="date">Added Nov 18, 2026</span>
     <span class="go">Watch full series →</span>
   </a>
 
-  <a class="pick" href="https://r.reelsgo.tv/LhJ4fKylI0Sp">
+  <a class="pick" data-date="2026-11-17" href="https://r.reelsgo.tv/LhJ4fKylI0Sp">
     <span class="title">One Night With a Stranger — He's the Don She's Forced to Marry</span>
     <span class="genre">Mafia romance — Camilla saved a boss in a back-alley fight, and walked straight into his casino. (Series 833139)</span>
+    <span class="date">Added Nov 17, 2026</span>
     <span class="go">Watch full series →</span>
   </a>
 
@@ -62,5 +77,23 @@
     <p style="margin-top:10px;">Disclosure: the watch links above are affiliate links. We may earn a commission if you watch or purchase through them, at no extra cost to you.</p>
   </footer>
 </div>
+<script>
+  var q = document.getElementById('q'), d = document.getElementById('d'),
+      none = document.getElementById('none'),
+      cards = Array.prototype.slice.call(document.querySelectorAll('.pick'));
+  function apply() {
+    var kw = q.value.trim().toLowerCase(), dt = d.value, shown = 0;
+    cards.forEach(function (c) {
+      var okKw = !kw || c.textContent.toLowerCase().indexOf(kw) !== -1;
+      var okDt = !dt || c.getAttribute('data-date') === dt;
+      var ok = okKw && okDt;
+      c.style.display = ok ? '' : 'none';
+      if (ok) shown++;
+    });
+    none.style.display = shown ? 'none' : 'block';
+  }
+  q.addEventListener('input', apply);
+  d.addEventListener('input', apply);
+</script>
 </body>
 </html>
