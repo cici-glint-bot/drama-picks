@@ -24,6 +24,9 @@
   .tools input::placeholder { color:#8A8A98; }
   .date { display:block; font-size:12px; color:#8A8A98; margin-top:8px; }
   .none { display:none; text-align:center; color:#8A8A98; font-size:14px; padding:18px 0; }
+  .pages { display:flex; gap:8px; justify-content:center; margin:6px 0 4px; }
+  .pg { background:#1A1A21; border:1px solid #2C2C38; border-radius:8px; color:#F2F2F5; font-size:14px; font-weight:600; padding:8px 14px; cursor:pointer; }
+  .pg.on { background:#FFD84D; border-color:#FFD84D; color:#0E0E12; }
   footer { margin-top:26px; text-align:center; color:#8A8A98; font-size:12px; line-height:1.6; }
 </style>
 </head>
@@ -43,8 +46,15 @@
 
   <!-- Newest first. Each button href is the drama's original affiliate link, used exactly as issued. -->
 
-  <a class="pick" data-date="2026-11-24" href="https://r.reelsgo.tv/PuGl5nY_05Gy">
+  <a class="pick" data-date="2026-11-25" href="https://r.reelsgo.tv/8_LWAgwsWnz6">
     <span class="day">NEW</span>
+    <span class="title">Back to the Moment I Lost Him</span>
+    <span class="genre">Time-reset romance — he chose the crash that gave her his heart, and she woke up twenty years earlier, nine years old, on the day her parents came to meet Ivy Carter.</span>
+    <span class="date">Added Nov 25, 2026</span>
+    <span class="go">Watch full series →</span>
+  </a>
+
+  <a class="pick" data-date="2026-11-24" href="https://r.reelsgo.tv/PuGl5nY_05Gy">
     <span class="title">The Night I Left Him at the Altar</span>
     <span class="genre">Rebirth revenge — she died in the rain, then woke up on her wedding day. This time, she knows how it ends.</span>
     <span class="date">Added Nov 24, 2026</span>
@@ -100,28 +110,45 @@
     <span class="go">Watch full series →</span>
   </a>
 
+  <div class="pages" id="pages"></div>
+
   <footer>
-    <p>New pick every day — follow Drama Picks on TikTok, Facebook &amp; Instagram.</p>
+    <p>New pick every day — follow Drama Picks on TikTok &amp; Facebook.</p>
     <p style="margin-top:10px;">Disclosure: the watch links above are affiliate links. We may earn a commission if you watch or purchase through them, at no extra cost to you.</p>
   </footer>
 </div>
 <script>
   var q = document.getElementById('q'), d = document.getElementById('d'),
-      none = document.getElementById('none'),
-      cards = Array.prototype.slice.call(document.querySelectorAll('.pick'));
+      none = document.getElementById('none'), pages = document.getElementById('pages'),
+      cards = Array.prototype.slice.call(document.querySelectorAll('.pick')),
+      page = 1, PER = 8;
   function apply() {
-    var kw = q.value.trim().toLowerCase(), dt = d.value, shown = 0;
+    var kw = q.value.trim().toLowerCase(), dt = d.value, matched = [];
     cards.forEach(function (c) {
       var okKw = !kw || c.textContent.toLowerCase().indexOf(kw) !== -1;
       var okDt = !dt || c.getAttribute('data-date') === dt;
-      var ok = okKw && okDt;
-      c.style.display = ok ? '' : 'none';
-      if (ok) shown++;
+      if (okKw && okDt) matched.push(c);
     });
-    none.style.display = shown ? 'none' : 'block';
+    var total = Math.max(1, Math.ceil(matched.length / PER));
+    if (page > total) page = total;
+    cards.forEach(function (c) { c.style.display = 'none'; });
+    matched.slice((page - 1) * PER, page * PER).forEach(function (c) { c.style.display = ''; });
+    none.style.display = matched.length ? 'none' : 'block';
+    pages.innerHTML = '';
+    if (total > 1) {
+      for (var i = 1; i <= total; i++) {
+        var b = document.createElement('button');
+        b.textContent = i;
+        b.className = 'pg' + (i === page ? ' on' : '');
+        b.setAttribute('data-pg', i);
+        b.addEventListener('click', function () { page = +this.getAttribute('data-pg'); apply(); window.scrollTo(0, 0); });
+        pages.appendChild(b);
+      }
+    }
   }
-  q.addEventListener('input', apply);
-  d.addEventListener('input', apply);
+  q.addEventListener('input', function () { page = 1; apply(); });
+  d.addEventListener('input', function () { page = 1; apply(); });
+  apply();
 </script>
 </body>
 </html>
